@@ -889,18 +889,18 @@ public class XML {
     public static JSONObject toJSONObject(Reader reader, JSONPointer path) throws JSONException{
         JSONObject jo = new JSONObject();
         XMLTokener x = new XMLTokener(reader);
-
-        ArrayList<String> keys = new ArrayList<String>();               //keep array of keys from pointer
-        keys.addAll(Arrays.asList(path.toString().split("/")));
-        if (keys.get(0).equals("")){
-            keys.remove(0);
-        }
-
-        String newPath = "";
-        for (int i = 1; i < keys.size(); i++) {
-            newPath += "/" + keys.get(i);
-        }
-        path = new JSONPointer(newPath);
+//
+//        ArrayList<String> keys = new ArrayList<String>();               //keep array of keys from pointer
+//        keys.addAll(Arrays.asList(path.toString().split("/")));
+//        if (keys.get(0).equals("")){
+//            keys.remove(0);
+//        }
+//
+//        String newPath = "";
+//        for (int i = 1; i < keys.size(); i++) {
+//            newPath += "/" + keys.get(i);
+//        }
+//        path = new JSONPointer(newPath);
 
         //while loop just skips the title of xml file
         while (x.more()) {
@@ -909,8 +909,9 @@ public class XML {
                 parseModified(x,jo,null,XMLParserConfiguration.ORIGINAL,path, false);
             }
         }
-        System.out.println(jo.toString(4));
-        return jo;
+        //System.out.println(jo.toString(4));
+
+        return (JSONObject) jo.query(path);
     }
 
     public static JSONObject toJSONObject(Reader reader, JSONPointer path, JSONObject replacement){
