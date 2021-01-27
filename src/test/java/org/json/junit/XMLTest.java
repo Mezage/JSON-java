@@ -30,24 +30,11 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-import org.json.XML;
-import org.json.XMLParserConfiguration;
-import org.json.XMLXsiTypeConverter;
+import org.json.*;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -1067,5 +1054,138 @@ public class XMLTest {
             });
             fail("Expected to be unable to modify the config");
         } catch (Exception ignored) { }
+    }
+
+    //added test cases for milestone project 2
+
+    @Test
+    public void testXMLOBJECTwithPointer(){
+        try {
+            FileReader br = new FileReader(new File("books.xml"));
+            JSONObject object= XML.toJSONObject(br, new JSONPointer("/catalog/book/0"));
+
+            System.out.println(object.toString(4));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testXMLObjectReplace(){
+        try {
+            FileReader br = new FileReader(new File("books.xml"));
+            JSONObject substitute = new JSONObject("{\"name\": \"John\", \"age\": 31}");
+            JSONObject object = XML.toJSONObject(br, new JSONPointer("/catalog/book/0"),substitute);
+            String s =
+                    "{\"catalog\": {\"book\": [\n" +
+                            "    {\n" +
+                            "        \"name\": \"John\",\n" +
+                            "        \"age\": 31\n" +
+                            "    },\n" +
+                            "    {\n" +
+                            "        \"author\": \"Ralls, Kim\",\n" +
+                            "        \"price\": 5.95,\n" +
+                            "        \"genre\": \"Fantasy\",\n" +
+                            "        \"description\": \"A former architect battles corporate zombies,\\r\\n            an evil sorceress, and her own childhood to become queen\\r\\n            of the world.\",\n" +
+                            "        \"id\": \"bk102\",\n" +
+                            "        \"title\": \"Midnight Rain\",\n" +
+                            "        \"publish_date\": \"2000-12-16\"\n" +
+                            "    },\n" +
+                            "    {\n" +
+                            "        \"author\": \"Corets, Eva\",\n" +
+                            "        \"price\": 5.95,\n" +
+                            "        \"genre\": \"Fantasy\",\n" +
+                            "        \"description\": \"After the collapse of a nanotechnology\\r\\n            society in England, the young survivors lay the\\r\\n            foundation for a new society.\",\n" +
+                            "        \"id\": \"bk103\",\n" +
+                            "        \"title\": \"Maeve Ascendant\",\n" +
+                            "        \"publish_date\": \"2000-11-17\"\n" +
+                            "    },\n" +
+                            "    {\n" +
+                            "        \"author\": \"Corets, Eva\",\n" +
+                            "        \"price\": 5.95,\n" +
+                            "        \"genre\": \"Fantasy\",\n" +
+                            "        \"description\": \"In post-apocalypse England, the mysterious\\r\\n            agent known only as Oberon helps to create a new life\\r\\n            for the inhabitants of London. Sequel to Maeve\\r\\n            Ascendant.\",\n" +
+                            "        \"id\": \"bk104\",\n" +
+                            "        \"title\": \"Oberon's Legacy\",\n" +
+                            "        \"publish_date\": \"2001-03-10\"\n" +
+                            "    },\n" +
+                            "    {\n" +
+                            "        \"author\": \"Corets, Eva\",\n" +
+                            "        \"price\": 5.95,\n" +
+                            "        \"genre\": \"Fantasy\",\n" +
+                            "        \"description\": \"The two daughters of Maeve, half-sisters,\\r\\n            battle one another for control of England. Sequel to\\r\\n            Oberon's Legacy.\",\n" +
+                            "        \"id\": \"bk105\",\n" +
+                            "        \"title\": \"The Sundered Grail\",\n" +
+                            "        \"publish_date\": \"2001-09-10\"\n" +
+                            "    },\n" +
+                            "    {\n" +
+                            "        \"author\": \"Randall, Cynthia\",\n" +
+                            "        \"price\": 4.95,\n" +
+                            "        \"genre\": \"Romance\",\n" +
+                            "        \"description\": \"When Carla meets Paul at an ornithology\\r\\n            conference, tempers fly as feathers get ruffled.\",\n" +
+                            "        \"id\": \"bk106\",\n" +
+                            "        \"title\": \"Lover Birds\",\n" +
+                            "        \"publish_date\": \"2000-09-02\"\n" +
+                            "    },\n" +
+                            "    {\n" +
+                            "        \"author\": \"Thurman, Paula\",\n" +
+                            "        \"price\": 4.95,\n" +
+                            "        \"genre\": \"Romance\",\n" +
+                            "        \"description\": \"A deep sea diver finds true love twenty\\r\\n            thousand leagues beneath the sea.\",\n" +
+                            "        \"id\": \"bk107\",\n" +
+                            "        \"title\": \"Splish Splash\",\n" +
+                            "        \"publish_date\": \"2000-11-02\"\n" +
+                            "    },\n" +
+                            "    {\n" +
+                            "        \"author\": \"Knorr, Stefan\",\n" +
+                            "        \"price\": 4.95,\n" +
+                            "        \"genre\": \"Horror\",\n" +
+                            "        \"description\": \"An anthology of horror stories about roaches,\\r\\n            centipedes, scorpions  and other insects.\",\n" +
+                            "        \"id\": \"bk108\",\n" +
+                            "        \"title\": \"Creepy Crawlies\",\n" +
+                            "        \"publish_date\": \"2000-12-06\"\n" +
+                            "    },\n" +
+                            "    {\n" +
+                            "        \"author\": \"Kress, Peter\",\n" +
+                            "        \"price\": 6.95,\n" +
+                            "        \"genre\": \"Science Fiction\",\n" +
+                            "        \"description\": \"After an inadvertant trip through a Heisenberg\\r\\n            Uncertainty Device, James Salway discovers the problems\\r\\n            of being quantum.\",\n" +
+                            "        \"id\": \"bk109\",\n" +
+                            "        \"title\": \"Paradox Lost\",\n" +
+                            "        \"publish_date\": \"2000-11-02\"\n" +
+                            "    },\n" +
+                            "    {\n" +
+                            "        \"author\": \"O'Brien, Tim\",\n" +
+                            "        \"price\": 36.95,\n" +
+                            "        \"genre\": \"Computer\",\n" +
+                            "        \"description\": \"Microsoft's .NET initiative is explored in\\r\\n            detail in this deep programmer's reference.\",\n" +
+                            "        \"id\": \"bk110\",\n" +
+                            "        \"title\": \"Microsoft .NET: The Programming Bible\",\n" +
+                            "        \"publish_date\": \"2000-12-09\"\n" +
+                            "    },\n" +
+                            "    {\n" +
+                            "        \"author\": \"O'Brien, Tim\",\n" +
+                            "        \"price\": 36.95,\n" +
+                            "        \"genre\": \"Computer\",\n" +
+                            "        \"description\": \"The Microsoft MSXML3 parser is covered in\\r\\n            detail, with attention to XML DOM interfaces, XSLT processing,\\r\\n            SAX and more.\",\n" +
+                            "        \"id\": \"bk111\",\n" +
+                            "        \"title\": \"MSXML3: A Comprehensive Guide\",\n" +
+                            "        \"publish_date\": \"2000-12-01\"\n" +
+                            "    },\n" +
+                            "    {\n" +
+                            "        \"author\": \"Galos, Mike\",\n" +
+                            "        \"price\": 49.95,\n" +
+                            "        \"genre\": \"Computer\",\n" +
+                            "        \"description\": \"Microsoft Visual Studio 7 is explored in depth,\\r\\n            looking at how Visual Basic, Visual C++, C#, and ASP+ are\\r\\n            integrated into a comprehensive development\\r\\n            environment.\",\n" +
+                            "        \"id\": \"bk112\",\n" +
+                            "        \"title\": \"Visual Studio 7: A Comprehensive Guide\",\n" +
+                            "        \"publish_date\": \"2001-04-16\"\n" +
+                            "    }\n" +
+                            "]}}" ;
+
+            Util.compareActualVsExpectedJsonObjects(object,new JSONObject(s));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
