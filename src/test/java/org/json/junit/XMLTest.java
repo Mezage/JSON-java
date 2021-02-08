@@ -39,6 +39,7 @@ import org.json.*;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.xml.sax.XMLReader;
 
 
 /**
@@ -1443,5 +1444,30 @@ public class XMLTest {
         }catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void testXMLObjectTagNonArray(){
+        String s = "<?xml version=\"1.0\"?>\n" +
+                "<!-- This is a comment -->\n" +
+                "<address>\n" +
+                "    <name>Lars </name>\n" +
+                "    <street> Test </street>\n" +
+                "    <telephone number= \"0123\"/>\n" +
+                "</address>";
+        String expected = "{\"swe262_address\": {\n" +
+                "    \"swe262_street\": \"Test\",\n" +
+                "    \"swe262_name\": \"Lars\",\n" +
+                "    \"telephone\": {\"swe262_number\": \"0123\"}\n" +
+                "}}";
+
+        Function<String,String> modifier = new Function<String, String>() {
+            @Override
+            public String apply(String s) {
+                return "swe262_" + s;
+            }
+        };
+        JSONObject object = XML.toJSONObject(new StringReader(s), modifier);
+        assertEquals(object.toString(4), expected);
     }
 }
