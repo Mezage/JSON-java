@@ -8,7 +8,8 @@ Tests-->located at very bottom of XMLTest.java:
 2) tests 2nd function: able to replace sub object
 3) tests 2nd function: able to replace index in nested array
 4) tests 3rd function: able to replace keys of xml file with array
-5) tests 3rd function: able to replace keys of xml without array
+5) tests 3rd function: able to show that the same JsonObject would be created if the transformer only returned the same tag
+6) tests 3rd function: successfully throws NullPointerException when working with transformer that returns null
 
 Comments on newest toJSONObject()
 *the benefits of switching tags during parsing, seems to have marginal benefits in smaller files

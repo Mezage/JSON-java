@@ -1447,27 +1447,48 @@ public class XMLTest {
     }
 
     @Test
-    public void testXMLObjectTagNonArray(){
+    public void shouldOutputSame(){
         String s = "<?xml version=\"1.0\"?>\n" +
                 "<!-- This is a comment -->\n" +
                 "<address>\n" +
                 "    <name>Lars </name>\n" +
                 "    <street> Test </street>\n" +
-                "    <telephone number= \"0123\"/>\n" +
                 "</address>";
-        String expected = "{\"swe262_address\": {\n" +
-                "    \"swe262_street\": \"Test\",\n" +
-                "    \"swe262_name\": \"Lars\",\n" +
-                "    \"telephone\": {\"swe262_number\": \"0123\"}\n" +
-                "}}";
 
         Function<String,String> modifier = new Function<String, String>() {
             @Override
             public String apply(String s) {
-                return "swe262_" + s;
+                return s;
             }
         };
         JSONObject object = XML.toJSONObject(new StringReader(s), modifier);
-        assertEquals(object.toString(4), expected);
+        JSONObject expected = XML.toJSONObject(new StringReader(s));
+        Util.compareActualVsExpectedJsonObjects(object, expected);
+    }
+
+    @Test
+    public void shouldHandleNullTransformer(){
+        String s = "<?xml version=\"1.0\"?>\n" +
+                "<!-- This is a comment -->\n" +
+                "<address>\n" +
+                "    <name>Lars </name>\n" +
+                "    <street> Test </street>\n" +
+                "</address>";
+
+        Function<String, String> modifier = new Function<String, String>() {
+            @Override
+            public String apply(String s) {
+                return null;
+            }
+        };
+
+        try {
+            JSONObject object = XML.toJSONObject(new StringReader(s), modifier);
+            fail("Expecting a NullPointerException");
+        }catch (NullPointerException e){
+            assertEquals("Expecting an NullPointerException message",
+                    "Null key.",
+                    e.getMessage());
+        }
     }
 }
