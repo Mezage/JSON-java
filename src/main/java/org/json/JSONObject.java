@@ -2665,10 +2665,10 @@ public class JSONObject {
             throw new Exception("Json array");
             //return ((JSONArray) object).toList().stream();
             }
-        else
-            throw new Exception("Not array nor object detected!");
+//        else
+//            throw new Exception("Not array nor object detected!");
 
-        //return this.map.entrySet().stream();
+        return this.map.entrySet().stream();
         //return Stream.concat(Stream.of(this, this.map.toString()));
     }
 

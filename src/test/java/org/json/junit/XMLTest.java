@@ -32,15 +32,15 @@ import static org.junit.Assert.fail;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
-import com.jayway.jsonpath.internal.JsonContext;
 import org.json.*;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.xml.sax.XMLReader;
 
 
 /**
@@ -1493,6 +1493,8 @@ public class XMLTest {
         }
     }
 
+    /* MILESTONE 4 */
+
     @Test
     public void streamObjectTestArrayException(){
         try {
@@ -1503,8 +1505,6 @@ public class XMLTest {
             assertEquals("Expecting an JsonArray message",
                     "Json array", e.getMessage());
         }
-        //JSONObject object = XML.toJSONObject("<Books><book><title>AAA</title><author>ASmith</author></book><book><title>BBB</title><author>BSmith</author></book></Books>");
-        //System.out.println(object.toString(4));
 
         //TODO: make tests for the rest of these
         //obj.toStream().forEach(node -> do some transformation, possibly based on the path of the node);
@@ -1513,7 +1513,7 @@ public class XMLTest {
     }
 
     @Test
-    public void streamObjectTest(){
+    public void streamObjectTestFilter_ForEach(){
                 String s = "<location>\n" +
                 "  <facility>\n" +
                 "    <name>NYU School of Medicine</name>\n" +
@@ -1535,5 +1535,24 @@ public class XMLTest {
                 "  </contact_backup>\n" +
                 "</location>";
         JSONObject object = XML.toJSONObject(new StringReader(s));
+        try {
+            AtomicInteger i= new AtomicInteger();
+            StringBuilder output = new StringBuilder();
+            object.toStream().filter(k -> k.toString().split("\\{").length > 1)
+                    .forEach(k -> {System.out.println("mswe_" + k); i.getAndIncrement(); output.append("mswe_").append(k).append("\n");});
+            assertEquals(2, i.get());
+
+            String exp = "mswe_facility={\"address\":[10016,\"United States\",\"New York\",\"New York\"],\"name\":\"NYU School of Medicine\"}\n" +
+                    "mswe_contact_backup={\"last_name\":\"Binita Shah, MD\"}\n";
+            assertEquals(exp, output.toString());
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void streamObjectTestMap(){
+        JSONObject object = XML.toJSONObject("<Books><book><title>AAA</title><author>ASmith</author></book><book><title>BBB</title><author>BSmith</author></book></Books>");
+        System.out.println(object.toString(4));
     }
 }

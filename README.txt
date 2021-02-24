@@ -12,13 +12,13 @@ Tests-->located at very bottom of XMLTest.java:
 6) tests 3rd function: successfully throws NullPointerException when working with transformer that returns null
 ---------- Milestone 4 ----------
 7) tests .toStream(): Tests for JsonArray exception when parsing JsonObject which includes a JsonArray
-8) tests .toStream():
+8) tests .toStream(): Tests filter function, by filtering for nodes that have nested JsonObjects + tests forEach by modifying tag
 
 Comments on newest toJSONObject():
 * the benefits of switching tags during parsing, seems to have marginal benefits in smaller files
 * but on larger files could save time on not having to iterate through the file again, despite my original method of doing so recursively
 
 Comments on toStream():
-* returns the top level keys in a json object, with the corresponding values being equal to the values in its respective leaves
+* returns the top level keys (nodes) in a json object, with the corresponding values being equal to the values in its respective leaves
 * does not specifically handle JsonArrays, will throw an exception indicating that it's attempting to stream such an item
 
