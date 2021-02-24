@@ -13,6 +13,7 @@ Tests-->located at very bottom of XMLTest.java:
 ---------- Milestone 4 ----------
 7) tests .toStream(): Tests for JsonArray exception when parsing JsonObject which includes a JsonArray
 8) tests .toStream(): Tests filter function, by filtering for nodes that have nested JsonObjects + tests forEach by modifying tag
+9) tests .toStream(): makes a list
 
 Comments on newest toJSONObject():
 * the benefits of switching tags during parsing, seems to have marginal benefits in smaller files

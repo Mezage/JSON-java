@@ -2655,7 +2655,6 @@ public class JSONObject {
             this.map.put((String) this.map.keySet().toArray()[0], ((JSONObject) object).map.values());
 
             return ((JSONObject) object).toStream();
-            //return this.map.entrySet().stream();
         }
         else if (object instanceof JSONArray){
 //            Stream.Builder<JSONObject> builder = Stream.builder();
@@ -2669,7 +2668,6 @@ public class JSONObject {
 //            throw new Exception("Not array nor object detected!");
 
         return this.map.entrySet().stream();
-        //return Stream.concat(Stream.of(this, this.map.toString()));
     }
 
 }

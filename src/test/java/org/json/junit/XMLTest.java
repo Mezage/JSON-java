@@ -36,8 +36,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.json.*;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -1505,11 +1507,6 @@ public class XMLTest {
             assertEquals("Expecting an JsonArray message",
                     "Json array", e.getMessage());
         }
-
-        //TODO: make tests for the rest of these
-        //obj.toStream().forEach(node -> do some transformation, possibly based on the path of the node);
-        //List<String> titles = obj.toStream().map(node -> extract value for key "title").collect(Collectors.toList());
-        //obj.toStream().filter(node -> node with certain properties).forEach(node -> do some transformation);
     }
 
     @Test
@@ -1552,7 +1549,18 @@ public class XMLTest {
 
     @Test
     public void streamObjectTestMap(){
-        JSONObject object = XML.toJSONObject("<Books><book><title>AAA</title><author>ASmith</author></book><book><title>BBB</title><author>BSmith</author></book></Books>");
-        System.out.println(object.toString(4));
+        JSONObject object = XML.toJSONObject("<Books><fav><title>BBB</title><author>BSmith</author></fav></Books>");
+        //System.out.println(object.toString(4));
+
+        try {   //extract value for key "title"
+            //
+            List<Object> titles = object.toStream()
+                    .map(node -> node.toString().split("=")[0].equals("fav") ? node.toString().split("=")[1] : null).collect(Collectors.toList());
+            //titles.stream().forEach(l -> System.out.println(l));
+            assertEquals(titles.toString(), "[[BSmith, BBB]]");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }
