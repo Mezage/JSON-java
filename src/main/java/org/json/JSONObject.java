@@ -36,16 +36,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * A JSONObject is an unordered collection of name/value pairs. Its external
@@ -1627,9 +1621,6 @@ public class JSONObject {
      * implementations and interfaces has the annotation. Returns the depth of the
      * annotation in the hierarchy.
      *
-     * @param <A>
-     *            type of the annotation
-     *
      * @param m
      *            method to check
      * @param annotationClass
@@ -2645,4 +2636,40 @@ public class JSONObject {
                 "JSONObject[" + quote(key) + "] is not a " + valueType + " (" + value + ")."
                 , cause);
     }
+
+    public Stream<? extends Object> toStream() throws Exception {
+        Object object = this.map.entrySet().stream().findFirst().get().getValue();
+
+        //base case
+        if (object instanceof String){
+            return this.map.entrySet().stream();    //possibly save all the paths in container, ex:hashmap
+        }
+
+        else if (object instanceof JSONObject) {
+            //loop through each nested item to update their values in map
+            for (Object o: this.map.values()) {
+                if (o instanceof JSONObject)
+                    ((JSONObject) o).toStream();
+            }
+
+            this.map.put((String) this.map.keySet().toArray()[0], ((JSONObject) object).map.values());
+
+            return ((JSONObject) object).toStream();
+            //return this.map.entrySet().stream();
+        }
+        else if (object instanceof JSONArray){
+//            Stream.Builder<JSONObject> builder = Stream.builder();
+//            for (Object nestedob: (JSONArray)object){
+//                builder.add(((JSONObject)nestedob).toStream());
+//            }
+            throw new Exception("Json array");
+            //return ((JSONArray) object).toList().stream();
+            }
+        else
+            throw new Exception("Not array nor object detected!");
+
+        //return this.map.entrySet().stream();
+        //return Stream.concat(Stream.of(this, this.map.toString()));
+    }
+
 }

@@ -24,8 +24,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.Writer;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -34,6 +36,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 
 /**
@@ -1150,7 +1153,6 @@ public class XML {
         }
         return temp;
     }
-
 
     /**
      * Convert a well-formed (but not necessarily valid) XML string into a

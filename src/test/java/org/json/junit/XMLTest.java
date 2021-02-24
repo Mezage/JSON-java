@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import com.jayway.jsonpath.internal.JsonContext;
 import org.json.*;
 import org.junit.Rule;
 import org.junit.Test;
@@ -1490,5 +1491,49 @@ public class XMLTest {
                     "Null key.",
                     e.getMessage());
         }
+    }
+
+    @Test
+    public void streamObjectTestArrayException(){
+        try {
+            JSONObject object = XML.toJSONObject(new FileReader(new File("src/test/resources/Issue537.xml")));
+            object.toStream().forEach(k -> System.out.println(k));
+            fail("Expecting a JsonArray");
+        }catch(Exception e) {
+            assertEquals("Expecting an JsonArray message",
+                    "Json array", e.getMessage());
+        }
+        //JSONObject object = XML.toJSONObject("<Books><book><title>AAA</title><author>ASmith</author></book><book><title>BBB</title><author>BSmith</author></book></Books>");
+        //System.out.println(object.toString(4));
+
+        //TODO: make tests for the rest of these
+        //obj.toStream().forEach(node -> do some transformation, possibly based on the path of the node);
+        //List<String> titles = obj.toStream().map(node -> extract value for key "title").collect(Collectors.toList());
+        //obj.toStream().filter(node -> node with certain properties).forEach(node -> do some transformation);
+    }
+
+    @Test
+    public void streamObjectTest(){
+                String s = "<location>\n" +
+                "  <facility>\n" +
+                "    <name>NYU School of Medicine</name>\n" +
+                "    <address>\n" +
+                "      <city>New York</city>\n" +
+                "      <state>New York</state>\n" +
+                "      <zip>10016</zip>\n" +
+                "      <country>United States</country>\n" +
+                "    </address>\n" +
+                "  </facility>\n" +
+                "  <status>Recruiting</status>\n" +
+                "  <contact>\n" +
+                "    <last_name>Fatmira Curovic</last_name>\n" +
+                "    <phone>646-501-9648</phone>\n" +
+                "    <email>fatmira.curovic@nyumc.org</email>\n" +
+                "  </contact>\n" +
+                "  <contact_backup>\n" +
+                "    <last_name>Binita Shah, MD</last_name>\n" +
+                "  </contact_backup>\n" +
+                "</location>";
+        JSONObject object = XML.toJSONObject(new StringReader(s));
     }
 }
