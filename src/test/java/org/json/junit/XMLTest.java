@@ -1567,26 +1567,57 @@ public class XMLTest {
 
     /* MILESTONE 5 */
     @Test
-    public void toJSONASYNC(){
+    public void toJSONASYNCH(){
+        try {
+            StringReader sreader = new StringReader("<Books><fav><title>BBB</title><author>BSmith</author></fav></Books>");
+
+            CompletableFuture<Boolean> asynch = XML.toJSONObject(sreader,
+                    (JSONObject ob) -> System.out.println("JSON object:\n" + ob.toString(4)),
+                    (Exception e) -> System.out.println("error: " + e.getMessage()));
+
+            //assert error flag was raised
+            assertFalse(asynch.get());
+
+        }catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void toJSONASYNC2running(){
         try{
             FileReader reader = new FileReader(new File("books.xml"));
             StringReader sreader = new StringReader("<Books><fav><title>BBB</title><author>BSmith</author></fav></Books>");
-            Writer writer = new FileWriter("output.txt");
-            Writer writer1 = new FileWriter("out2.txt");
 
             CompletableFuture<Boolean> asynch = XML.toJSONObject(reader,
-                    (JSONObject jo) -> {jo.write(writer); System.out.println("Finished running: " + 1);},
+                    (JSONObject jo) -> System.out.println("1st Finished:\n" + jo.toString(4)),
                     (Exception e) -> System.out.println(e.getMessage()));
 
             CompletableFuture<Boolean> asynch2 = XML.toJSONObject(sreader,
-                    (JSONObject jo) -> {jo.write(writer1); System.out.println("Finished running: " + 2);},
+                    (JSONObject jo) -> System.out.println("2nd Finished:\n" + jo.toString(4)),
                     (Exception e) -> System.out.println(e.getMessage()));
 
-            //assert that they at least ran?
+            //assert that error flag not raised
             assertFalse(asynch.get());
             assertFalse(asynch2.get());
 
         } catch (IOException | InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testJSONASYNCHwithNullConsumer(){
+        try {
+            StringReader sreader = new StringReader("<Books><fav><title>BBB</title><author>BSmith</author></fav></Books>");
+
+            CompletableFuture<Boolean> asynch = XML.toJSONObject(sreader, null,
+                    (Exception e) -> System.out.println("error: " + e.getMessage()));
+
+            //assert error flag was raised
+            assertTrue(asynch.get());
+
+        }catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
     }

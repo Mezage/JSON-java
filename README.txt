@@ -14,8 +14,12 @@ Tests-->located at very bottom of XMLTest.java:
 7) tests .toStream(): Tests for JsonArray exception when parsing JsonObject which includes a JsonArray
 8) tests .toStream(): Tests filter function, by filtering for nodes that have nested JsonObjects + tests forEach by modifying tag
 9) tests .toStream(): makes a list
+---------- Milestone 5 ----------
+10) test .toJSONObject(): Tests that function works
+11) test .toJSONObject(): Shows that function is asynchronous, smaller file processed first even though called 2nd
+12) test .toJSONObject(): Tests for null function input, catches error correctly
 
-Comments on newest toJSONObject():
+Comments on Milestone3 toJSONObject():
 * the benefits of switching tags during parsing, seems to have marginal benefits in smaller files
 * but on larger files could save time on not having to iterate through the file again, despite my original method of doing so recursively
 

@@ -1169,7 +1169,6 @@ public class XML {
                     parse(x,jo,null,XMLParserConfiguration.ORIGINAL);
                 }
             }
-
             try {
                 function.accept(jo);
             }catch (Exception e) {
