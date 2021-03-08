@@ -34,6 +34,8 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -1553,7 +1555,6 @@ public class XMLTest {
         //System.out.println(object.toString(4));
 
         try {   //extract value for key "title"
-            //
             List<Object> titles = object.toStream()
                     .map(node -> node.toString().split("=")[0].equals("fav") ? node.toString().split("=")[1] : null).collect(Collectors.toList());
             //titles.stream().forEach(l -> System.out.println(l));
@@ -1562,5 +1563,31 @@ public class XMLTest {
             e.printStackTrace();
         }
 
+    }
+
+    /* MILESTONE 5 */
+    @Test
+    public void toJSONASYNC(){
+        try{
+            FileReader reader = new FileReader(new File("books.xml"));
+            StringReader sreader = new StringReader("<Books><fav><title>BBB</title><author>BSmith</author></fav></Books>");
+            Writer writer = new FileWriter("output.txt");
+            Writer writer1 = new FileWriter("out2.txt");
+
+            CompletableFuture<Boolean> asynch = XML.toJSONObject(reader,
+                    (JSONObject jo) -> {jo.write(writer); System.out.println("Finished running: " + 1);},
+                    (Exception e) -> System.out.println(e.getMessage()));
+
+            CompletableFuture<Boolean> asynch2 = XML.toJSONObject(sreader,
+                    (JSONObject jo) -> {jo.write(writer1); System.out.println("Finished running: " + 2);},
+                    (Exception e) -> System.out.println(e.getMessage()));
+
+            //assert that they at least ran?
+            assertFalse(asynch.get());
+            assertFalse(asynch2.get());
+
+        } catch (IOException | InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 }

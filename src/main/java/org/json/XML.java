@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -1152,6 +1154,30 @@ public class XML {
             }
         }
         return temp;
+    }
+    
+    /** Milestone 5 added here**/
+    public static CompletableFuture<Boolean> toJSONObject(Reader reader, Consumer<JSONObject> function, Consumer<Exception> ex){
+        return CompletableFuture.supplyAsync(() -> {
+            JSONObject jo = new JSONObject();
+            XMLTokener x = new XMLTokener(reader);
+            boolean error = false;                  //maybe use to check whether their provided function ran ok
+
+            while (x.more()) {
+                x.skipPast("<");
+                if(x.more()) {
+                    parse(x,jo,null,XMLParserConfiguration.ORIGINAL);
+                }
+            }
+
+            try {
+                function.accept(jo);
+            }catch (Exception e) {
+                ex.accept(e);
+                error = true;
+            }
+            return error;
+        });
     }
 
     /**
