@@ -15,7 +15,7 @@ Tests-->located at very bottom of XMLTest.java:
 8) tests .toStream(): Tests filter function, by filtering for nodes that have nested JsonObjects + tests forEach by modifying tag
 9) tests .toStream(): makes a list
 ---------- Milestone 5 ----------
-10) test .toJSONObject(): Tests that function works
+10) test .toJSONObject(): Tests that function works, works with filewriter
 11) test .toJSONObject(): Shows that function is asynchronous, smaller file processed first even though called 2nd
 12) test .toJSONObject(): Tests for null function input, catches error correctly
 

@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -1570,15 +1571,18 @@ public class XMLTest {
     public void toJSONASYNCH(){
         try {
             StringReader sreader = new StringReader("<Books><fav><title>BBB</title><author>BSmith</author></fav></Books>");
+            FileWriter writer = new FileWriter("output.txt");
 
             CompletableFuture<Boolean> asynch = XML.toJSONObject(sreader,
-                    (JSONObject ob) -> System.out.println("JSON object:\n" + ob.toString(4)),
+                    (JSONObject ob) -> ob.write(writer),
                     (Exception e) -> System.out.println("error: " + e.getMessage()));
 
-            //assert error flag was raised
+            //assert error flag not raised
             assertFalse(asynch.get());
+            writer.flush();
+            writer.close();
 
-        }catch (InterruptedException | ExecutionException e) {
+        }catch (InterruptedException | ExecutionException | IOException e) {
             e.printStackTrace();
         }
     }
